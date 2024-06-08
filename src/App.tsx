@@ -1,25 +1,30 @@
 import React from 'react';
 import logo from './logo.svg';
 import './App.css';
+import LoginForm from './login-form/LoginForm';
+import BookList from './books/BookList';
+import LoanList from './loans/LoanList';
+import { BrowserRouter, Route, Navigate } from 'react-router-dom';
+import { Routes } from 'react-router-dom';
+import MainPage from './MainPage/MainPage';
+import ApiProvider from './api/ApiProvider';
+import BookAdd from './books/BookAdd'
 
 function App() {
+  
   return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.tsx</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
-    </div>
+    <BrowserRouter>{}
+    <ApiProvider>
+    <Routes>
+      <Route path="/" element={<Navigate to="/Login" />}/>
+      <Route path="/Login" element={<LoginForm/>}/>
+      <Route path="/Books" element={<BookList/>}/>
+      <Route path="/Home" element={<MainPage/>}/>
+      <Route path="/Loans" element={<LoanList/>}/>
+      <Route path="/AddBook" element={<BookAdd/>}/>
+    </Routes>
+    </ApiProvider>
+    </BrowserRouter>
   );
 }
 

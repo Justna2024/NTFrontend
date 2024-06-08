@@ -1,0 +1,61 @@
+.Book-list{
+    padding: 2rem;
+    display: flex;
+    flex-direction: column;
+    margin-top: 2%;
+    align-items: center;
+    justify-content: center;
+    gap: 2rem;
+}
+
+.navBarStyle {
+    display:flex;
+    align-items: center;
+    justify-content: space-between;
+    width: screen;
+    background-color: lightgreen;
+    padding: 10px;
+    font-family: courier;
+    }
+   
+
+.Header{
+    
+    display: flex;
+    flex-direction: column;
+    margin-top: 2%;
+    align-items: center;
+    justify-content: center;
+    color: darkolivegreen;
+    text-align: center;
+}
+.line{
+    color: darkolivegreen;
+    height: 1px;
+    width: 100%;
+}
+
+.list{
+    width:36rem;
+    justify-content: center;
+    display: flex;
+    flex-direction: column;
+    
+}
+
+.Book-title{
+    color: darkolivegreen;
+    font-weight: bold;
+    font-size: 20px;
+    text-align: center;
+
+}
+
+.flex{
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    justify-content: center;
+    gap:8px;
+
+}
