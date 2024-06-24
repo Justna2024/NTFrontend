@@ -1,9 +1,9 @@
 export interface User {
-    userId: bigint;
-    firstName: string;
-    lastName: string;
-    dateOfBirth: number;
-    email: string;
-    auth: any;
-    student: boolean;
+    userId: bigint
+    firstName: string | undefined;
+    lastName: string    | undefined;
+    dateOfBirth: number      | undefined;
+    email: string | undefined;
+    auth: any | undefined;
+    student: boolean | undefined;
 }

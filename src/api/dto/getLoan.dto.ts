@@ -1,12 +1,11 @@
-import { Book } from "./book";
-import { User } from "./user";
+import { Book } from "../../entities/book";
+import { User } from "../../entities/user";
 
-
-export interface Loan {
+export class GetLoanDto{
     loanId: bigint | undefined;
     book: Book | undefined;
-    user: User| undefined;
+    user: User | undefined;
     loanDate: Date | undefined;
     dueDate: Date | undefined;
     returnDate: Date | undefined;
-  }
+}

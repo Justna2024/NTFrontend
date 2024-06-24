@@ -1,7 +1,6 @@
-
+import React, { useEffect, useState } from 'react';
 import {
   Box,
-  Button,
   Chip,
   Dialog,
   DialogActions,
@@ -12,74 +11,97 @@ import {
   ListItem,
   ListItemText,
   Typography,
+  Button,
 } from '@mui/material';
-
-import './LoanList.css';
 import PersonIcon from '@mui/icons-material/Person';
-import BusinessIcon from '@mui/icons-material/Business';
 import EditCalendarIcon from '@mui/icons-material/EditCalendar';
 import EventAvailableIcon from '@mui/icons-material/EventAvailable';
 import EventIcon from '@mui/icons-material/Event';
-import { Loan } from '../entities/loan';
-import { Book } from '../entities/book';
 import { LoanPresented } from './jsonTransform';
-import { useEffect, useState } from 'react';
 import { useApi } from '../api/ApiProvider';
+import { Book } from '../entities/book';
+import { User } from '../entities/user';
 import { t } from 'i18next';
-import { useTranslation } from 'react-i18next';
 
 interface LoanItemProps {
   loan: LoanPresented;
-  
+  onReturn: () => void; // Function used to tell loanlist to refresh
 }
 
-function LoanItem({ loan}: LoanItemProps) {
-  const { bookId, dueDate, loanDate, returnDate } = loan;
-  const {t} = useTranslation();
+function LoanItemAdmin({ loan, onReturn }: LoanItemProps) {
+  const { bookId, userId, dueDate, loanDate, returnDate } = loan;
 
   const apiClient = useApi();
 
-  const [book, setBooks] = useState<Book>();
+  const [book, setBook] = useState<Book | null>(null);
+  const [user, setUser] = useState<User | null>(null);
+
   const [openDialog, setOpenDialog] = useState(false);
+  const [alreadyReturnedDialogOpen, setAlreadyReturnedDialogOpen] = useState(false);
+
+  useEffect(() => {
+    const fetchBook = async () => {
+      try {
+        const response = await apiClient.getBookById(loan.bookId);
+        if (response.success) {
+          setBook(response.data);
+        }
+      } catch (error) {
+        console.error('Error fetching book:', error);
+      }
+    };
+
+    const fetchUser = async () => {
+      try {
+        const response = await apiClient.getUserById(loan.userId);
+        if (response.success) {
+          setUser(response.data);
+        }
+      } catch (error) {
+        console.error('Error fetching user:', error);
+      }
+    };
+
+    fetchBook();
+    fetchUser();
+  }, [apiClient, loan.bookId, loan.userId]);
+
   const handleOpenDialog = () => {
-    if(returnDate === null){
-    setOpenDialog(true)};
+    setOpenDialog(true);
   };
 
   const handleCloseDialog = () => {
     setOpenDialog(false);
   };
-  
-  useEffect(() => {
-    const fetchBooks = async () => {
-      try {
-        const response = await apiClient.getBookById(loan.bookId);
-        if (response.success) {
-          setBooks(response.data);
-        } 
-      } catch (error) {
-        console.error('Error fetching books:', error);
-      } 
-    };
 
-    fetchBooks();
-  }, [apiClient]);
+  const handleAlreadyReturnedDialogClose = () => {
+    setAlreadyReturnedDialogOpen(false);
+  };
 
   const handleReturnItem = async () => {
-    
+    const data = {
+      loanId: parseInt(loan.loanId),
+      returnDate: new Date().getTime(),
+    };
+
+    if (loan.returnDate === null) {
       try {
-        const response = await apiClient.addReturnRequest(loan.loanId, loan.bookId);
+        const response = await apiClient.returnLoan(data);
         if (response.success) {
-          
+          console.log('Item returned successfully!');
           handleCloseDialog();
-          
+          onReturn(); // send to loan list info to refetch loans
         }
       } catch (error) {
         console.error('Error returning item:', error);
         handleCloseDialog();
       }
-     }
-  ;
+    } else {
+      console.log('Item already returned');
+      setAlreadyReturnedDialogOpen(true);
+      handleCloseDialog();
+    }
+  };
 
   return (
     <div>
@@ -93,8 +115,15 @@ function LoanItem({ loan}: LoanItemProps) {
           }
           secondary={
             <>
-              
-          
+              <Typography variant="subtitle1" component="span">
+                <Divider>
+                  <Chip label={t('reader')} size="small" avatar={<PersonIcon />} />
+                </Divider>
+                {user?.email}
+                <div></div>
+                {user?.firstName} {user?.lastName}
+              </Typography>
+              <br />
               <Typography variant="subtitle1" component="span">
                 <Divider>
                   <Chip label={t('loan date')} size="small" avatar={<EditCalendarIcon />} />
@@ -127,18 +156,18 @@ function LoanItem({ loan}: LoanItemProps) {
         <DialogTitle>Confirm Return</DialogTitle>
         <DialogContent>
           <DialogContentText>
-            Are you sure you want to return this book?
+            Are you sure you want to mark this item as returned?
           </DialogContentText>
         </DialogContent>
         <DialogActions>
           <Button onClick={handleCloseDialog}>Cancel</Button>
           <Button onClick={handleReturnItem} variant="contained" color="primary">
-            Return Book
+            Return Item
           </Button>
         </DialogActions>
       </Dialog>
 
-      {/* <Dialog open={alreadyReturnedDialogOpen} onClose={handleAlreadyReturnedDialogClose}>
+      <Dialog open={alreadyReturnedDialogOpen} onClose={handleAlreadyReturnedDialogClose}>
         <DialogTitle>Item Already Returned</DialogTitle>
         <DialogContent>
           <DialogContentText>
@@ -150,9 +179,9 @@ function LoanItem({ loan}: LoanItemProps) {
             OK
           </Button>
         </DialogActions>
-      </Dialog> */}
+      </Dialog>
     </div>
   );
 }
 
-export default LoanItem;
+export default LoanItemAdmin;

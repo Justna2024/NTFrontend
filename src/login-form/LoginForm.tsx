@@ -9,6 +9,7 @@ import { useNavigate } from 'react-router-dom';
 
 import { useApi } from '../api/ApiProvider';
 import {JwtPayload, jwtDecode} from 'jwt-decode';
+import { t } from 'i18next';
 
 interface Token {
   token: string;
@@ -46,8 +47,10 @@ function LoginForm() {
         setUserRole(decoded.role);
 
         
-
-          navigate('/Home');
+        if(decoded.role === 'ROLE_ADMIN'){
+          navigate('/HomeAdmin')
+        } else{
+          navigate('/Home')};
         } else{
           formik.setFieldError('username', 'Invalid username or password');
         }
@@ -84,8 +87,8 @@ function LoginForm() {
   return (
     <div>
       <nav className="navBarStyle">
-        <h4>Library System {userId?.toString()} </h4>
-        <a href="/">Register </a>
+        <h4>{t('library')}</h4>
+        
       </nav>
       <Formik
         initialValues={{ username: '', password: '' }}

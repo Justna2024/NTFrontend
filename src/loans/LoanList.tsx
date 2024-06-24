@@ -2,66 +2,53 @@ import { List } from '@mui/material';
 import LoanItem from './LoanItem';
 import { Loan } from '../entities/loan';
 
-import NavBar from '../NavBar/NavBar';
+import NavBarUser from '../NavBar/NavBarUser';
 import './LoanList.css';
 import { useEffect, useState } from 'react';
 import { useApi } from '../api/ApiProvider';
-import { readLoanJson } from './jsonTransform';
+import { LoanPresented} from './jsonTransform';
 import { Book } from '../entities/book';
+import { useTranslation } from 'react-i18next';
 function LoanList() {
   const apiClient = useApi();
-  const [loans, setLoans] = useState<Loan[]>([]);
+  const {t} = useTranslation();
+  const [loans, setLoans] = useState<LoanPresented[]>([]);
 
 //using useeffect to fetch loans from api -  https://legacy.reactjs.org/docs/hooks-effect.html
 // using it twice here so that we can get the book title
   useEffect(() => {
     const fetchLoans = async () => {
       try {
-        const response = await apiClient.getLoans();
-        if (response.success) {
-          const jsonLoans = readLoanJson(response.data);
+        const response = await apiClient.getLoansByUser();
+        if (response.success && response.data != null) {
+
+          
+          const jsonLoans = response.data
+
+
           setLoans(jsonLoans);
+          console.log('GGGGG', loans)
         }
       } catch (error) {
         console.error('Error fetching loans:', error);
       }
-    }
-    fetchLoans();})
-
-
-    const [books, setBooks] = useState<Book[]>([]);
-
-    useEffect(() => {
-      const fetchBooks = async () => {
-        try {
-          const response = await apiClient.getBooks();
-          if (response.success) {
-            setBooks(response.data);
-          }
-        } catch (error) {
-          console.error('Error fetching books:', error);
-        }
-      };
-
-
-
-      
-      fetchBooks();
-    }, [apiClient]);
+    };
+    fetchLoans();
+  }, [apiClient]);
 
 
 
     return (
       <div>
-        <NavBar />
+        <NavBarUser />
         <div className="LoanList" >
           <List>
-            <h1 className="Header">Your Loans</h1>
+            <h1 className="Header">{t('your loans')}</h1>
             {/* goes over every loan and book and creates a LoanItem with them */}
-            {loans.map((loan) => (
-              books.map((book) => <LoanItem key={loan.loanId} loan={loan} book={book} />)
+            {loans.map((loan) => 
+               <LoanItem key={loan.loanId} loan={loan}  />)
 
-            ))}
+            }
           </List>
         </div>
       </div>

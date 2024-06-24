@@ -5,15 +5,13 @@ import { Book } from '../entities/book';
 import NavBar from '../NavBar/NavBar';
 import './BookList.css';
 import { useApi } from '../api/ApiProvider';
-import BookItem from './BookItem';
-import NavBarUser from '../NavBar/NavBarUser';
+import { t } from 'i18next';
 import { useTranslation } from 'react-i18next';
 
-function BookList() {
+function BookListAdmin() {
   const apiClient = useApi();
   const [books, setBooks] = useState<Book[]>([]);
   const {t} = useTranslation();
-
   const fetchBooks = async () => {
     try {
       const response = await apiClient.getBooks();
@@ -31,12 +29,12 @@ function BookList() {
 
   return (
     <div>
-      <NavBarUser />
+      <NavBar />
       <div className="Book-list">
         <List>
           <h1 className="Header">{t('Available books')}</h1>
           {books.map((book) => (
-            <BookItem key={book.bookId} book={book} onUpdate={fetchBooks} />
+            <BookItemAdmin key={book.bookId} book={book} onUpdate={fetchBooks} />
           ))}
         </List>
       </div>
@@ -44,4 +42,4 @@ function BookList() {
   );
 }
 
-export default BookList;
+export default BookListAdmin;

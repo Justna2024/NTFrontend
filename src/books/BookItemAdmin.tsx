@@ -28,18 +28,17 @@ import { updateBookDto } from '../api/dto/updateBook.dto';
 import { t } from 'i18next';
 import { useTranslation } from 'react-i18next';
 
-interface BookItem {
+interface BookItemAdminProps {
   book: Book;
   onUpdate: () => void; 
 }
 
-function BookItem({ book, onUpdate }: BookItem) {
+function BookItemAdmin({ book, onUpdate }: BookItemAdminProps) {
   const apiClient = useApi();
   const { bookId, title, author, publisher, year, availableCopies, isbn } = book;
   const {t} = useTranslation();
-
   const [openDialog, setOpenDialog] = useState(false);
-  const [editBook, setEditBook] = useState<Book>(book);
+  const [editBook, setEditBook] = useState<Book>({ ...book });
 
   const [open, setOpen] = React.useState(false);
   const [snackbarMessage, setSnackbarMessage] = React.useState('');
@@ -62,27 +61,51 @@ function BookItem({ book, onUpdate }: BookItem) {
   };
 
   
-  const handleRequest = async () => {
-    
+  const handleUpdateBook = async () => {
+    const data: updateBookDto = {
+      title: editBook.title,
+      isbn: editBook.isbn,
+      author: editBook.author,
+      publisher: editBook.publisher,
+      year : editBook.year,
+      availableCopies: editBook.availableCopies,
+    };
     try {
 
-      const response = await apiClient.addRequest(bookId);
+      const response = await apiClient.updateBook(data, bookId);
       if (response.success) {
         
         onUpdate(); 
         handleCloseDialog();
-        setSnackbarMessage('Loan Requested successfully');
+        setSnackbarMessage('Book updated successfully');
         setOpen(true);
       }else{
-        setSnackbarMessage('Failed to request loan');
+        setSnackbarMessage('Failed to update book');
         setOpen(true);}
     } catch (error) {
-      console.error('Error requesting loan:', error);
+      console.error('Error updating book:', error);
       
     }
   };
 
-  
+  const handleDeleteBook = async () => {
+    try {
+      const response = await apiClient.deleteBook(bookId);
+      if (response.success) {
+        
+        onUpdate(); 
+        handleCloseDialog();
+        setSnackbarMessage('Book deleted successfully');
+        setOpen(true);
+        
+      } else {
+        setSnackbarMessage('Failed to delete book');
+        setOpen(true);
+      }
+    } catch (error) {
+      console.error('Error deleting book:', error);
+    }
+  };
 
   
 
@@ -144,16 +167,67 @@ function BookItem({ book, onUpdate }: BookItem) {
       </ListItem>
 
       <Dialog open={openDialog} onClose={handleCloseDialog}>
-        <DialogTitle>Request Loan</DialogTitle>
+        <DialogTitle>Edit Book</DialogTitle>
         <DialogContent>
-          <DialogActions>
-            <Button onClick={handleCloseDialog}>Cancel</Button>
-            <Button onClick={handleRequest} variant="contained" color="primary">
-              Request
-            </Button>
-          </DialogActions>
+          <TextField
+            label="Title"
+            name="title"
+            value={editBook.title}
+            onChange={handleInputChange}
+            fullWidth
+            margin="dense"
+          />
+          <TextField
+            label="Author"
+            name="author"
+            value={editBook.author}
+            onChange={handleInputChange}
+            fullWidth
+            margin="dense"
+          />
+          <TextField
+            label="Publisher"
+            name="publisher"
+            value={editBook.publisher}
+            onChange={handleInputChange}
+            fullWidth
+            margin="dense"
+          />
+          <TextField
+            label="Year"
+            name="year"
+            value={editBook.year}
+            onChange={handleInputChange}
+            fullWidth
+            margin="dense"
+          />
+          <TextField
+            label="Available Copies"
+            name="availableCopies"
+            value={editBook.availableCopies}
+            onChange={handleInputChange}
+            fullWidth
+            margin="dense"
+            type='number'
+          />
+          <TextField
+            label="ISBN"
+            name="isbn"
+            value={editBook.isbn}
+            onChange={handleInputChange}
+            fullWidth
+            margin="dense"
+          />
         </DialogContent>
-        
+        <DialogActions>
+          <Button onClick={handleCloseDialog}>Cancel</Button>
+          <Button onClick={handleUpdateBook} variant="contained" color="primary">
+            Save
+          </Button>
+          <Button onClick={handleDeleteBook} variant="contained" color="secondary">
+            Delete
+          </Button>
+        </DialogActions>
       </Dialog>
       <Snackbar open={open} 
       autoHideDuration={6000} 
@@ -173,4 +247,4 @@ function BookItem({ book, onUpdate }: BookItem) {
   );
 }
 
-export default BookItem;
+export default BookItemAdmin;

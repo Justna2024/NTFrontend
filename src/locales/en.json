@@ -1,0 +1,22 @@
+{
+    "library": "Library",
+    "books": "Books",
+    "loans": "Loans",
+    "users": "Users",
+    "add book": "Add book",
+    "add loan": "Add loan",
+    "add user": "Add user",
+    "loan requests": "Loan requests",
+    "navigation bar": "Browse books and loans using the Navigation bar",
+    "Available books": "Available books",
+    "Author": "Author",
+    "title": "Title",
+    "publisher": "Publisher",
+    "year": "Year",
+    "available copies": "Available copies",
+    "save": "Save",
+    "reader": "Reader",
+    "loan date": "Loan date",
+    "return date": "Return date",
+    "due date": "Due date"
+}

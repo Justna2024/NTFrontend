@@ -1,26 +1,27 @@
 
-import { useTranslation } from 'react-i18next';
+import { t } from 'i18next';
 import NavBar from '../NavBar/NavBar';
-import NavBarUser from '../NavBar/NavBarUser';
 import { useApi } from '../api/ApiProvider';
 import './MainPage.css';
-function MainPage(){
+import { useTranslation } from 'react-i18next';
+function MainPageAdmin(){
 
     const apiClient = useApi();
     const {t} = useTranslation();
+
     apiClient.getBooks().then((response) => {
         console.log(response);
     });
 
     return(
         <div>
-            <NavBarUser/>
+            <NavBar/>
             <div className='Home'>
-            <h1>{t('welcome')}</h1>
+            <h1>Admin</h1>
             <h2>{t('navigation bar')}</h2>
             </div>
         </div>
     )
 }
 
-export default MainPage
+export default MainPageAdmin

@@ -1,18 +1,75 @@
-
-.Header{
-    
-        display: flex;
-        flex-direction: column;
-        margin-top: 2%;
-        align-items: center;
-        justify-content: center;
-        color: darkolivegreen;
-        text-align: center;
+.Header {
+    display: flex;
+    flex-direction: column;
+    margin-top: 2%;
+    align-items: center;
+    justify-content: center;
+    color: darkolivegreen;
+    text-align: center;
 }
 
-.LoanList{
+.LoanList {
     padding-top: 4rem;
     margin-left: auto;
-    margin-right:auto;
+    margin-right: auto;
     width: 60%;
+    height: 80vh; 
+}
+
+.flex {
+    display: flex;
+    flex-wrap: wrap;
+}
+
+.flex-col {
+    display: flex;
+    flex-direction: column;
+}
+
+.BookList {
+    overflow-y: scroll;
+    height: 60vh; 
+    padding-right: 10px; 
+}
+
+.LoanAdd {
+    padding-top: 5rem;
+    height: 80vh; 
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+}
+
+.BookForm {
+    flex: 1;
+    overflow-y: auto;
+    padding: 20px;
+    box-sizing: border-box;
+    
+}
+
+.Item {
+    background-color: rgb(200, 255, 196);
+    padding-left: 8px;
+    border : 1px solid #240f0f;
+    border-radius: 4px;
+    accent-color: rgb(0, 118, 12);
+    
+}
+
+.button {
+    background-color: rgb(200, 255, 196);
+    height: 4rem;
+    font-size: larger;
+    border-radius: 4px ;
+}
+
+button:hover {
+    background-color: yellow;
+  }
+
+.typography:hover{
+    background-color: rgb(221, 255, 221);
+    cursor: pointer;
 }
